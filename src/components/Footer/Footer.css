@@ -1,0 +1,14 @@
+.footer-wrapper {
+  height: 105px;
+  background-color: #383838;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 30px;
+}
+
+.footer-title {
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  font-size: 30px;
+}
