@@ -11,3 +11,7 @@
   color: white;
   font-size: 30px;
 }
+
+a {
+  text-decoration: none;
+}
