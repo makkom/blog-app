@@ -10,3 +10,11 @@ export type Post = {
 export type Posts = {
   posts: Post[];
 };
+
+export type User = {
+  user: {
+    email: any;
+    password: any;
+    auth: boolean;
+  };
+};
