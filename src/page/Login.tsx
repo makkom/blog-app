@@ -3,12 +3,13 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Button from "@material-ui/core/Button";
-import selectPosts from "../redux_tool/postSlice";
-import { useSelector } from "react-redux";
+import { selectPosts } from "../redux_tool/postSlice";
+import { userAuth, confirmAuth } from "../redux_tool/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 import "./Login.css";
-import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
 import { makeStyles } from "@material-ui/styles";
+import { User } from "../types";
 
 const useStyles = makeStyles({
   margin: {
@@ -17,18 +18,31 @@ const useStyles = makeStyles({
 });
 
 const Login: React.FC = () => {
-  const [input, setInput] = useState("");
-  // const posts = useSelector(selectPosts);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
 
   const classes = useStyles();
 
-  const changeText = (e) => {
-    setInput(e.target.value);
-    console.log(input);
+  const loginUser = {
+    email: process.env.REACT_APP_LOGIN_EMAIL,
+    password: process.env.REACT_APP_LOGIN_PASSWORD,
+  };
+
+  const changeEmailText = (e) => {
+    setEmail(e.target.value);
+    console.log(email);
+  };
+
+  const changePasswordText = (e) => {
+    setPassword(e.target.value);
+    console.log(password);
   };
 
   const confirmSubmit = () => {
-    console.log(input);
+    const userData = { user: { email: email, password: password } };
+    dispatch(userAuth(userData));
   };
 
   return (
@@ -38,11 +52,12 @@ const Login: React.FC = () => {
         <div className="login-wrap">
           <div className="login_input-area">
             <p className="top-text">管理者認証画面</p>
-            <form className="input-form" onChange={(e) => changeText(e)}>
+            <form className="input-form">
               <TextField
                 className="text"
                 id="input-with-icon-textfield"
                 label="メールアドレス"
+                onChange={(e) => changeEmailText(e)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -55,6 +70,8 @@ const Login: React.FC = () => {
                 className={classes.margin}
                 id="input-with-icon-textfield"
                 label="パスワード"
+                type="password"
+                onChange={(e) => changePasswordText(e)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start"></InputAdornment>
@@ -65,7 +82,7 @@ const Login: React.FC = () => {
             <Button
               variant="contained"
               className={classes.margin}
-              onClick={confirmSubmit}
+              onClick={() => confirmSubmit()}
             >
               ログイン
             </Button>
