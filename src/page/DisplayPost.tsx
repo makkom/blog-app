@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import marked from "marked";
@@ -6,12 +6,12 @@ import "./DisplayPost.css";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createPost } from "../redux_tool/postSlice";
-import { Post } from "../types";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { auth } from "../firebase";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,21 +37,29 @@ const DisplayPost: React.FC = () => {
   const [markdown, setMarkdown] = useState("");
   const [inputTitle, setInputTitle] = useState("");
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const history = useHistory();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      !user && history.push("/");
+    });
+  }, []);
 
   const titleChange = (e) => {
     setInputTitle(e.target.value);
   };
 
-  const submitData = () => {
-    const timestamp = Date.now();
-    const post: Post = {
+  const submitData = async () => {
+    const day = new Date();
+    const timestamp = day.toLocaleDateString();
+    const post = {
       createdAt: timestamp.toLocaleString(),
       title: inputTitle,
       body: markdown,
       like: 0,
     };
-    dispatch(createPost(post));
+    await createPost(post.createdAt, post.title, post.body, post.like);
+    history.push("/");
   };
 
   return (
@@ -80,15 +88,13 @@ const DisplayPost: React.FC = () => {
             <span dangerouslySetInnerHTML={{ __html: marked(markdown) }} />
           </div>
           <div className="button-wrapper">
-            <Link to="/">
-              <Button
-                variant="contained"
-                className={classes.button}
-                onClick={() => submitData()}
-              >
-                投稿する
-              </Button>
-            </Link>
+            <Button
+              variant="contained"
+              className={classes.button}
+              onClick={() => submitData()}
+            >
+              投稿する
+            </Button>
           </div>
         </div>
         <Footer />

@@ -1,5 +1,5 @@
 .main {
-  height: 750px;
+  height: 85vh;
 }
 
 .item-wrapper {
@@ -39,7 +39,42 @@
   appearance: none;
   position: absolute;
   top: 39px;
+  right: 200px;
+  color: white;
+  font-size: 18px;
+}
+
+.logout-btn {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  appearance: none;
+  position: absolute;
+  top: 41.5px;
   right: 70px;
   color: white;
   font-size: 18px;
+}
+
+.each_item_title {
+  animation-name: fade;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+}
+
+.each_item {
+  animation-name: fade;
+  animation-duration: 1.5s;
+  animation-iteration-count: 1;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }

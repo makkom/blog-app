@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   makeStyles,
   useTheme,
@@ -19,12 +19,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  selectPosts,
-  setPickUpPost,
-  getPickUpPost,
-} from "../../redux_tool/postSlice";
-import { Post } from "../../types";
+import { selectPosts, getPickUpPost } from "../../redux_tool/postSlice";
 import { Link } from "react-router-dom";
 
 const useStyles1 = makeStyles((theme: Theme) =>
@@ -35,6 +30,10 @@ const useStyles1 = makeStyles((theme: Theme) =>
     },
     eliminateBorder: {
       borderBottom: "none",
+      transition: "0.5s",
+      "&:hover": {
+        background: "#E5E5E5",
+      },
     },
     addBorder: {
       display: "block",
@@ -139,20 +138,14 @@ export default function CustomPaginationActionsTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const newClasses = useStyles1();
 
-  const posts = useSelector(selectPosts);
-  const pickUpPost = useSelector(getPickUpPost);
-  const dispatch = useDispatch();
-
-  const handlePost = (id) => {
-    dispatch(setPickUpPost(id));
-  };
+  let posts = useSelector(selectPosts);
 
   //rowに対して、記事を追加していく記述
 
-  const rows: any = [];
+  let rows: any = [];
 
   posts.map((post, key) => {
-    rows.push({ post });
+    rows.push(post);
   });
 
   //ここまで記事を追加
@@ -182,29 +175,25 @@ export default function CustomPaginationActionsTable() {
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
           ).map((row) => (
-            <TableRow
-              key={row.title}
-              className={newClasses.eliminateBorder}
-              onClick={() => handlePost(row.post.id)}
-            >
-              <Link to={`/post/${row.post.id}`}>
+            <TableRow key={row.title} className={newClasses.eliminateBorder}>
+              <Link to={`/post/${row.id}`}>
                 <TableCell
                   component="th"
                   scope="row"
                   className={newClasses.extendWidth}
                 >
-                  {row.post.title}
+                  {row.title}
                 </TableCell>
               </Link>
               <TableCell
                 style={{ width: 160 }}
                 align="right"
-                className={row.post.id}
+                className={row.id}
               >
-                {row.post.createdAt}
+                {row.createdAt}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
-                {row.post.like}
+                {row.like}
               </TableCell>
             </TableRow>
           ))}
@@ -217,7 +206,7 @@ export default function CustomPaginationActionsTable() {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[10, 25, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[10]}
               colSpan={3}
               count={rows.length}
               rowsPerPage={rowsPerPage}

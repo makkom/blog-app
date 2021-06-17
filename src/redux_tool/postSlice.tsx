@@ -1,35 +1,26 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
+import { db } from "../firebase";
 import { Post, Posts } from "../types";
 
-const URL = "http://localhost:3001";
-
 export type PostsState = {
-  posts: [
-    id: number,
-    createdAt: string,
-    updatedAt: string,
-    title: string,
-    body: string,
-    like?: number
-  ];
-  selectPost: Post;
+  idCount: number;
+  posts: {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    title: string;
+    body: string;
+    like: number;
+  }[];
+  pickUpPost: Post;
 };
 
-const initialState = {
+const initialState: PostsState = {
   idCount: 0,
-  posts: [
-    {
-      id: 0,
-      createdAt: "2021/6/12 11:10:29",
-      updatedAt: "",
-      title: "最初の記事",
-      body: "",
-      like: 0,
-    },
-  ],
+  posts: [],
   pickUpPost: {
-    id: 0,
+    id: "",
     createdAt: "",
     updatedAt: "",
     title: "",
@@ -38,75 +29,90 @@ const initialState = {
   },
 };
 
-// export const fetchPosts = createAsyncThunk(
-//   "posts/fetchPosts",
-//   async (_, thunkApi) => {
-//     const response = await axios.get<Posts>(`${URL}/posts`).catch((err) => {
-//       thunkApi.rejectWithValue(err);
-//       throw err;
-//     });
-//     return response.data;
-//   }
-// );
+// --------記事の全件取得
+
+export const fetchPosts = createAsyncThunk("post/getAllPosts", async () => {
+  const res = await db.collection("posts").orderBy("createdAt", "desc").get();
+
+  const allPosts = res.docs.map((doc) => ({
+    id: doc.id,
+    createdAt: doc.data().createdAt,
+    updatedAt: doc.data().updatedAt,
+    title: doc.data().title,
+    body: doc.data().body,
+    like: doc.data().like,
+  }));
+
+  const postNumber = allPosts.length;
+  const passData = { allPosts, postNumber };
+  return passData;
+});
+
+// --------記事の新規作成
+export const createPost = async (
+  createdAt: string,
+  title: string,
+  body: string,
+  like: number
+): Promise<void> => {
+  try {
+    await db.collection("posts").add({
+      createdAt: createdAt,
+      updatedAt: "",
+      title: title,
+      body: body,
+      like: like,
+    });
+  } catch (err) {
+    console.log("Error writing document: ", err);
+  }
+};
+
+// --------記事の編集
+
+export const editPost = async (submitData: {
+  id: string;
+  updatedAt: string;
+  title: string;
+  body: string;
+}): Promise<void> => {
+  const { id, updatedAt, title, body } = submitData;
+  try {
+    await db
+      .collection("posts")
+      .doc(id)
+      .set({ updatedAt, title, body }, { merge: true });
+  } catch (err) {
+    console.log("Error updating document:", err);
+  }
+};
+
+// --------記事の削除
+
+export const deletePost = async (id: string): Promise<void> => {
+  try {
+    await db.collection("posts").doc(id).delete();
+  } catch (err) {
+    console.log("Error removing document: ", err);
+  }
+};
 
 export const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
-    //ここから下、非同期通信を想定した記述
-    // setSelectPost: (state, action) => {
-    //   const posts = state.posts.filter((post) => post.id !== action.payload.id);
-    //   state.posts = [action.payload, ...posts];
-    // },
-    // extraReducers: (builder) => {
-    //   builder
-    //     .addCase(fetchPosts.fulfilled, (state, action) => {
-    //       if (action.payload !== undefined) {
-    //         state.posts = action.payload;
-    //       }
-    //     })
-    //     .addCase(fetchPosts.rejected, (action) => {
-    //       alert(action);
-    //     });
-    // },
-    //ここから下、ReduxToolKitの練習
-
-    //記事の作成
-    createPost: (state, action) => {
-      state.idCount++;
-      const newPost = {
-        id: state.idCount,
-        createdAt: action.payload.createdAt,
-        updatedAt: action.payload.updatedAt,
-        title: action.payload.title,
-        body: action.payload.body,
-        like: action.payload.like,
-      };
-      state.posts = [...state.posts, newPost];
-    },
-    //どの記事が選択されているか管理
     setPickUpPost: (state, action) => {
-      const pickUpPost = state.posts.find((post) => post.id === action.payload);
-
-      if (pickUpPost) {
-        state.pickUpPost = pickUpPost;
-      }
+      // const pickUpPost = state.posts.find((post) => post.id === action.payload);
+      // if (pickUpPost) {
+      //   state.pickUpPost = pickUpPost;
+      // }
     },
-    //記事の編集
-    editPost: (state, action) => {
-      const post = state.posts.find((p) => p.id === action.payload.id);
-      let updateLog = new Date();
-      if (post) {
-        post.updatedAt = updateLog.toLocaleString();
-        post.title = action.payload.title;
-        post.body = action.payload.body;
-      }
-    },
-    //記事の削除
-    deletePost: (state, action) => {
-      state.posts = state.posts.filter((p) => p.id !== action.payload.id);
-      state.idCount--;
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchPosts.fulfilled, (state, action) => {
+      state.posts = action.payload.allPosts;
+      state.idCount = action.payload.postNumber;
+    });
   },
 });
 
@@ -114,7 +120,6 @@ export const selectPosts = (state: RootState) => state.post.posts;
 
 export const getPickUpPost = (state: RootState) => state.post.pickUpPost;
 
-export const { createPost, setPickUpPost, editPost, deletePost } =
-  postSlice.actions;
+export const { setPickUpPost } = postSlice.actions;
 
 export default postSlice.reducer;

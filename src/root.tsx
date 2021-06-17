@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import confirmAuth from "./redux_tool/userSlice";
 
 const Routing = () => {
-
   return (
     <BrowserRouter>
       <Switch>
