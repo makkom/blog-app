@@ -18,8 +18,8 @@ import FirstPageIcon from "@material-ui/icons/FirstPage";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
-import { useDispatch, useSelector } from "react-redux";
-import { selectPosts, getPickUpPost } from "../../redux_tool/postSlice";
+import { useSelector } from "react-redux";
+import { selectPosts } from "../../redux_tool/postSlice";
 import { Link } from "react-router-dom";
 
 const useStyles1 = makeStyles((theme: Theme) =>
@@ -193,7 +193,7 @@ export default function CustomPaginationActionsTable() {
                 {row.createdAt}
               </TableCell>
               <TableCell style={{ width: 160 }} align="right">
-                {row.like}
+                {row.updatedAt}
               </TableCell>
             </TableRow>
           ))}
