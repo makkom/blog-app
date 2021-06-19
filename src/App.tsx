@@ -72,7 +72,7 @@ const App: React.FC = () => {
           <div className="each_item_title">
             <div className="article-title">タイトル</div>
             <div className="date-title">作成日時</div>
-            <div className="favorite-title">いいね数</div>
+            <div className="favorite-title">更新日時</div>
           </div>
           <div className="each_item">
             <CustomPaginationActionsTable />

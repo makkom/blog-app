@@ -4,7 +4,7 @@ export type Post = {
   updatedAt?: string;
   title: string;
   body: string;
-  like?: number;
+  comment?: any;
 };
 
 export type Posts = {

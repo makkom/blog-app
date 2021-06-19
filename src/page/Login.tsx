@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import TextField from "@material-ui/core/TextField";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import Button from "@material-ui/core/Button";
-import { selectPosts, fetchPosts } from "../redux_tool/postSlice";
-import { userAuth, confirmAuth } from "../redux_tool/userSlice";
+import { selectPosts } from "../redux_tool/postSlice";
 import { useSelector, useDispatch } from "react-redux";
 import "./Login.css";
 import Header from "../components/Header/Header";

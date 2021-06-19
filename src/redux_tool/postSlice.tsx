@@ -4,35 +4,27 @@ import { db } from "../firebase";
 import { Post, Posts } from "../types";
 
 export type PostsState = {
-  idCount: number;
+  order: number;
   posts: {
     id: string;
     createdAt: string;
     updatedAt: string;
     title: string;
     body: string;
-    like: number;
   }[];
-  pickUpPost: Post;
+  comments: { sentence: string; createdAt: string }[];
 };
 
 const initialState: PostsState = {
-  idCount: 0,
+  order: 0,
   posts: [],
-  pickUpPost: {
-    id: "",
-    createdAt: "",
-    updatedAt: "",
-    title: "",
-    body: "",
-    like: 0,
-  },
+  comments: [],
 };
 
 // --------記事の全件取得
 
 export const fetchPosts = createAsyncThunk("post/getAllPosts", async () => {
-  const res = await db.collection("posts").orderBy("createdAt", "desc").get();
+  const res = await db.collection("posts").orderBy("order", "desc").get();
 
   const allPosts = res.docs.map((doc) => ({
     id: doc.id,
@@ -40,7 +32,6 @@ export const fetchPosts = createAsyncThunk("post/getAllPosts", async () => {
     updatedAt: doc.data().updatedAt,
     title: doc.data().title,
     body: doc.data().body,
-    like: doc.data().like,
   }));
 
   const postNumber = allPosts.length;
@@ -48,20 +39,43 @@ export const fetchPosts = createAsyncThunk("post/getAllPosts", async () => {
   return passData;
 });
 
+// --------指定した記事のコメントの取得
+
+export const fetchComments = createAsyncThunk(
+  "comments/getComments",
+  async (id: string) => {
+    const res = await db
+      .collection("posts")
+      .doc(id)
+      .collection("comments")
+      .orderBy("order", "desc")
+      .get();
+
+    const getComments = res.docs.map((doc) => ({
+      sentence: doc.data().sentence,
+      createdAt: doc.data().createdAt,
+    }));
+
+    const commentsData = { getComments };
+    return commentsData;
+  }
+);
+
 // --------記事の新規作成
 export const createPost = async (
   createdAt: string,
   title: string,
-  body: string,
-  like: number
+  body: string
 ): Promise<void> => {
+  const day = new Date();
+
   try {
     await db.collection("posts").add({
+      order: day,
       createdAt: createdAt,
-      updatedAt: "",
+      updatedAt: createdAt,
       title: title,
       body: body,
-      like: like,
     });
   } catch (err) {
     console.log("Error writing document: ", err);
@@ -97,29 +111,41 @@ export const deletePost = async (id: string): Promise<void> => {
   }
 };
 
+// ---------コメントの追加
+
+export const createComment = async (
+  id: string,
+  sentence: string,
+  createdAt: string
+): Promise<void> => {
+  try {
+    let order = new Date();
+    await db
+      .collection("posts")
+      .doc(id)
+      .collection("comments")
+      .add({ order: order, sentence: sentence, createdAt: createdAt });
+  } catch (err) {
+    console.log("Error updating document:", err);
+  }
+};
+
 export const postSlice = createSlice({
   name: "post",
   initialState,
-  reducers: {
-    setPickUpPost: (state, action) => {
-      // const pickUpPost = state.posts.find((post) => post.id === action.payload);
-      // if (pickUpPost) {
-      //   state.pickUpPost = pickUpPost;
-      // }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchPosts.fulfilled, (state, action) => {
       state.posts = action.payload.allPosts;
-      state.idCount = action.payload.postNumber;
+    });
+    builder.addCase(fetchComments.fulfilled, (state, action) => {
+      state.comments = action.payload.getComments;
     });
   },
 });
 
 export const selectPosts = (state: RootState) => state.post.posts;
 
-export const getPickUpPost = (state: RootState) => state.post.pickUpPost;
-
-export const { setPickUpPost } = postSlice.actions;
+export const selectComments = (state: RootState) => state.post.comments;
 
 export default postSlice.reducer;

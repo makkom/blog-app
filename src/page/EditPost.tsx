@@ -75,10 +75,25 @@ const EditPost: React.FC = () => {
     history.push("/");
   };
 
+  //ボタン
+  const scroll_to_top_btn: any = document.querySelector("#scroll-to-top-btn");
+
+  function scroll_to_top() {
+    window.scroll({ top: 0, behavior: "smooth" });
+  }
+
+  const scrollHandle = () => {
+    scroll_to_top();
+  };
+
   return (
     <>
       <Header />
+
       <div className="post-main">
+        <button onClick={scrollHandle} id="scroll-to-top-btn" style={{}}>
+          <p className="scroll-title">↑</p>
+        </button>
         <div className="markdown-wrapper">
           <div className="title">記事を編集する</div>
           <form
@@ -91,6 +106,7 @@ const EditPost: React.FC = () => {
               id="outlined-basic"
               label="タイトル"
               variant="outlined"
+              required={true}
               value={inputTitle}
             />
           </form>
