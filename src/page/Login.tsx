@@ -14,8 +14,15 @@ import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
   marginWidth: {
+    backgroundColor: "#383838",
+    color: "white",
+    height: 50,
+    width: 140,
+    fontWeight: "bold",
     marginTop: 30,
-    width: 100,
+    "&:hover": {
+      backgroundColor: "#6b6a6a",
+    },
   },
   marginWidthExtend: {
     marginTop: 30,
@@ -101,7 +108,7 @@ const Login: React.FC = () => {
                 className={classes.marginWidth}
                 onClick={handleSubmit(handleSignIn)}
               >
-                ログイン
+                LOGIN
               </Button>
             </form>
           </div>
