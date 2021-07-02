@@ -1,44 +1,46 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+# はじめに
+このブログアプリは、本格運用しておりません。
+<br>
+<br>
+<img width="1792" alt="スクリーンショット 2021-07-02 23 19 54" src="https://user-images.githubusercontent.com/61450307/124288637-63ba7300-db8c-11eb-8af2-d8f8e38869bc.png">　　
+  
+<br>
+<br>
+  
+アプリとして基本的な機能である、記事の作成、編集、削除機能を備えており、下部にコメントを投稿できる機能を備えています。
 
-## Available Scripts
+マークダウンに関しては、投稿画面のテキストエリア上部、？マークを選択すると記述方法が書いてあります。
+<br>
+<br>
+<br>
+<br>
+![スクリーンショット 2021-07-02 23 20 12](https://user-images.githubusercontent.com/61450307/124289238-0d99ff80-db8d-11eb-9107-a05472ec04d3.png)
 
-In the project directory, you can run:
 
-### `yarn start`
+# 今回利用した技術
+<br>
+<br>
+このブログアプリは、Redux-Toolkitを使って作成しました。サーバレスで、Firebaseを利用しています。
+<br>
+<br>
+# 記事を作成・編集・削除する
+以下、URLにアクセスし、ログインすることで、記事の作成、編集、削除を行うことができます。
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+https://blog-app-dc1e7.web.app/login
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
 
-### `yarn test`
+<img width="1792" alt="スクリーンショット 2021-07-02 23 20 28" src="https://user-images.githubusercontent.com/61450307/124289271-168ad100-db8d-11eb-88e9-8f1eb81a6fac.png">
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+ログインID
 
-### `yarn build`
+test@test.com
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+PASSWORD
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+00000000
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Qiitaに記事も書いたので興味がある方は、お越しください！
 
-### `yarn eject`
+https://qiita.com/hizyouyou1/private/8879c53e2c77a6f30a5b
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
